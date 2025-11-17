@@ -69,21 +69,21 @@ Autrefois appelée ELK Stack, la suite Elastic est un ensemble d’outils puissa
 
 Avant de commencer, quelques remarques :
  - Il s’agit d’une configuration de base, qui ne sera pas accessible publiquement, et qui ne sera pas sécurisée, elle sert uniquement à te familiariser avec les outils.
- - Nous allons installer la suite Elastic (ELK) et Filebeat sur des machines virtuelles séparées — la VM « Elastic Stack » est dédiée à la gestion/analyse des logs ; Filebeat sera installé sur le serveur depuis lequel tu veux envoyer les logs.
+ - Nous allons installer la suite Elastic (ELK) et Filebeat sur des machines virtuelles séparées, la VM « Elastic Stack » est dédiée à la gestion/analyse des logs et Filebeat sera installé sur le serveur depuis lequel on veux envoyer les logs.
 
 Allez, on y va !
 
 
 #### 1.1. Préparatifs et mise à jour
 
-  `#sudo apt update && sudo apt upgrade -y`
+  `# sudo apt update && sudo apt upgrade -y`
 
 ![5](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/5.png)
 
 #### 1.2. Installer Elasticsearch
    
 - Télécharger et installer la clé publique d’Elasticsearch :
-  `#wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg`
+  `# wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg`
 
 - Installer le paquet apt-transport-https pour permettre les téléchargements via HTTPS :
   `#sudo apt-get install apt-transport-https`
@@ -91,16 +91,16 @@ Allez, on y va !
 ![2](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/2.png)
 
 - Ajouter le dépôt Elastic à ta liste de sources :
-  `#echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list`
+  `# echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list`
 
 - Mettre à jour les paquets et installer Elasticsearch :
-  `#sudo apt-get update && sudo apt-get install elasticsearch`
+  `# sudo apt-get update && sudo apt-get install elasticsearch`
 
 ![6](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/6.png)
 
 
 ***Attention*** : la sécurité d’Elasticsearch est activée par défaut. Le mot de passe, les certificats et les clés te seront affichés dans le terminal, il faut les sauvegarder quelque part. 
-Comme ici on garde l’installation locale (non accessible depuis l’extérieur), on va désactiver les fonctions de sécurité.
+Ici on garde l’installation locale (non accessible depuis l’extérieur) puis on désactive les fonctions de sécurité.
 
 - Modifier le fichier de configuration d’Elasticsearch :
    
@@ -123,12 +123,12 @@ Comme ici on garde l’installation locale (non accessible depuis l’extérieur
 ![9](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/9.png)
 
 - Tester l’API d’Elasticsearch :
-  `#curl -XGET "localhost:9200"`
+  `# curl -XGET "localhost:9200"`
 
 ![10](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/10.png)
 
 On obtiens une réponse JSON contenant des informations sur la version, le cluster, etc.
-Sinon cette réponse, il faudrait verifier la configuration et les règles du pare-feu (le port 9200 doit être autorisé).
+Si cette réponse n'est pas obtenu , il faudrait verifier la configuration et les règles du pare-feu (le port 9200 doit être autorisé).
 
 
 ### 3. Installer Logstash
@@ -174,13 +174,13 @@ Ensuite on Décommente et ajuste les lignes  :
 
 ![14](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/14.png)
 
-Si tout s’est bien passé, tu peux naviguer vers l’adresse IP de ton serveur ELK dans un navigateur : tu verras la page d’accueil de Kibana.
+Si tout s’est bien passé, on peux acceder au dashboard de ELK via ladresse IP du son serveur dans un navigateur 
 
 ![15](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/15.png)
 
 ### 5. Installer Filebeat sur le serveur source de logs
 
-Sur la machine dont tu veux envoyer les logs :
+Nous allons installer et configurer filebeat pour envoyer les logs vers logstash :
  
   #### 5.1 - Télécharger et installer Filebeat :
   `# curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.9.2-amd64.deb`
@@ -195,7 +195,7 @@ Sur la machine dont tu veux envoyer les logs :
 
  ![FLB](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/FLB.png)
 
- Comme on vas envoyer les logs à Logstash (et non directement à Elasticsearch), commentons la section output.elasticsearch :
+ Comme les logs vont passer par Logstash (et non directement à Elasticsearch), commentons la section output.elasticsearch :
 
  ![FLB2](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/FLB2.png)
 
@@ -203,7 +203,7 @@ ensuite on décommente la section output.logstash en indiquant l'adresse IP de t
  
 ```bash
 output.logstash:
-  hosts: ["192.168.50.130:5044"]
+  hosts: ["192.168.50.130:5044"] # IP et port de logstash
 ```
   
 #### 5.3 - Activer et démarrer Filebeat : 
@@ -225,11 +225,11 @@ Pour nous, on va activer les modules system et apache :
 # sudo filebeat modules enable apache
 ```
 
-Chaque module correspond à un fichier de configuration dans /etc/filebeat/modules.d/. Ouvre-les et mets enabled: true si ce n’est pas déjà fait. (pense aux questions de format, crochets, guillemets, etc.)
+Chaque module correspond à un fichier de configuration dans /etc/filebeat/modules.d/. Nous allons ouvrir et activer les mondule avec `enabled: true`
 
  ![FLB3](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/FLB3.png)
 
-   #### 5.5 - Charger les modèles d’index dans Elasticsearch (en utilistant l’IP de ton serveur ELK) :
+   #### 5.5 - Charger les modèles d’index dans Elasticsearch (en utilistant l’IP du serveur ELK) :
     
   `# sudo filebeat setup --index-management -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=["192.168.40.130:9200"]'`
 
@@ -237,13 +237,13 @@ Chaque module correspond à un fichier de configuration dans /etc/filebeat/modul
 
   #### 5.6 - Charger les tableaux de bord (dashboards) dans Kibana 
    
-  `#sudo filebeat setup -E output.logstash.enabled=false -E output.elasticsearch.hosts=['192.168.40.130:9200'] -E setup.kibana.host=192.168.40.130:5601`
+  `# sudo filebeat setup -E output.logstash.enabled=false -E output.elasticsearch.hosts=['192.168.40.130:9200'] -E setup.kibana.host=192.168.40.130:5601`
 
  ![20](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/20.png)
 
   #### 5.7 - Résultat final
  
-Enfin, on se connecte  à l’interface Kibana via le navigateur à l’adresse du serveur ELK, dans la section **Discover**, on devrais voir les données arriver. 
+Enfin, on se connecte à l’interface Kibana via le navigateur avec l’adresse du serveur ELK, dans la section **Discover**, on devrais voir les données arriver. 
 
 ### 6. Snort
  
@@ -254,28 +254,28 @@ Enfin, on se connecte  à l’interface Kibana via le navigateur à l’adresse 
 
   #### 6.2 - Installer les dépendances nécessaires
 Snort a besoin de plusieurs outils et bibliothèques :
-Pour installer l’ensemble de ces packages, nous allons, depuis le terminal, exécuter la commande suivante :
+Pour installer l’ensemble de ces packages, nous allons depuis le terminal exécuter la commande suivante :
 
- `#apt-get install mysql mysql-bench mysql-server mysql-devel mysqlclient10 php-mysql httpd pcre-devel php-gd gd mod_ssl glib2-devel gcc-c++ libpcap-devel php php-pear apt-get-utils gcc flex bison zlib* libpcap* pcre* libdnet libdnet-devel tcpdump`
+ `# apt-get install mysql mysql-bench mysql-server mysql-devel mysqlclient10 php-mysql httpd pcre-devel php-gd gd mod_ssl glib2-devel gcc-c++ libpcap-devel php php-pear apt-get-utils gcc flex bison zlib* libpcap* pcre* libdnet libdnet-devel tcpdump`
   
 Une fois l’installation des prérequis de Snort terminée, nous allons effectuer l’installation de la bibliothèque d’acquisition de données.
 
   #### 6.3 - Installation de la bibliothèque d’acquisition de données (DAQ)
  
 Snort utilise la bibliothèque d'acquisition de données (DAQ) pour extraire les appels vers les bibliothèques de capture de paquets. Pour commencer l'installation, nous allons créer un dossier d'installation qui contiendra nos fichiers tarball (fichiers d’archives) téléchargés. À partir d’un terminal nous allons télécharger et installer le paquet de DAQ. 
-Création du répertoire **snort_src/** : `#mkdir ~/snort_src`
+Création du répertoire **snort_src/** : `# mkdir ~/snort_src`
 
-On entre dans le répertoire créé avec la commande suivante : `#cd ~/snort_src/`
+On entre dans le répertoire créé avec la commande suivante : `# cd ~/snort_src/`
 
-Ensuite on télécharge le daq-2.0.6 avec la commande ci-contre : `#wget https://snort.org/downloads/snort/daq-2.0.6.tar.gz`
+Ensuite on télécharge le daq-2.0.6 avec la commande ci-contre : `# wget https://snort.org/downloads/snort/daq-2.0.6.tar.gz`
 
-On constate que le fichier téléchargé est un fichier compressé (extension.tar.gz), pour cela on le décompresse avec la commande suivante : `#tar -xvzf daq-2.0.6.tar.gz`
+On constate que le fichier téléchargé est un fichier compressé (extension.tar.gz), pour cela on le décompresse avec la commande suivante : `# tar -xvzf daq-2.0.6.tar.gz`
  
 Et enfin on procède à l’installation du daq-2.0.6 avec les commandes suivantes :
 ```bash
- #cd daq-2.0.6/
- #./configure
- #make && make install
+ # cd daq-2.0.6/
+ # ./configure
+ # make && make install
 ```
   
  Maintenant que nous avons fait le nécessaire en installant les prérequis de Snort, nous allons installer snort-2.9.15.1
@@ -330,13 +330,14 @@ Maintenant, nous allons vérifier si Snort est bien installé avec la commande `
 
 #### 6.5 - Installation des règles
 
-Les règles de Snort sont des instructions ou codes qui décrivent les signatures des virus, des sites web malveillants, des logiciels dangereux, des intrusions, des attaques et des paquets suspects. Pour installer les règles Snort, nous devons nous inscrire sur le site officiel de Snort `https://www.snort.org` ou plus précisément à l’URL `https://www.snort.org/users/sign_up`. Ensuite, nous serons en mesure de télécharger les règles pour la configuration de Snort. Une fois inscrit sur le site, nous pouvons télécharger les règles et continuer l’installation. Nous allons ensuite le décompresser dans /etc/snort pour que les répertoires et fichiers nécessaires soient directement disponibles pour Snort. Avec la commande suivante, nous allons décompresser (commande tar) le fichier téléchargé et le mettre dans /etc/snort (l’utilisation de l’option `-C` puis en indiquant le répertoire de destination) :
+Les règles de Snort sont des instructions ou codes qui décrivent les signatures des virus, des sites web malveillants, des logiciels dangereux, des intrusions, des attaques et des paquets suspects. 
+Pour installer les règles Snort, nous devons nous inscrire sur le site officiel de Snort `https://www.snort.org` ou plus précisément à l’URL `https://www.snort.org/users/sign_up`. Ensuite, nous serons en mesure de télécharger les règles pour la configuration de Snort. Une fois inscrit sur le site, nous pouvons télécharger les règles et continuer l’installation. Nous allons ensuite le décompresser dans /etc/snort pour que les répertoires et fichiers nécessaires soient directement disponibles pour Snort. Avec la commande suivante, nous allons décompresser (commande tar) le fichier téléchargé et le mettre dans /etc/snort (l’utilisation de l’option `-C` puis en indiquant le répertoire de destination) :
 
  `# tar -xvzf snortrules-snapshot-29110.tar -C /etc/snort`
  
 #### 6.6 - Installation de Oinkmaster
 
-Oinkmaster est un script écrit avec le langage de programmation PERL par l’éditeur du logiciel qui va nous servir à mettre jour les fichiers de règles qui sont présents dans /etc/snort/rules. Pour permettre à Oinkmaster de télécharger les règles de Snort, nous avons besoin de le configurer en synchronisation avec le site officiel de Snort. Pour cela nous avons besoin d’une clé appelé « Oink code » sur le site de Snort. Après enregistrement notre « Oink code » est .Nous allons à présent mettre en place Oinkmaster.
+Oinkmaster est un script écrit avec le langage de programmation `PERL` par l’éditeur du logiciel qui va nous servir à mettre jour les fichiers de règles qui sont présents dans `/etc/snort/rules`. Pour permettre à Oinkmaster de télécharger les règles de Snort, nous avons besoin de le configurer en synchronisation avec le site officiel de Snort. Pour cela nous avons besoin d’une clé appelé « Oink code » sur le site de Snort. Après enregistrement notre « Oink code » est .Nous allons à présent mettre en place Oinkmaster.
 
  ![23B](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/23B.png)
 
@@ -407,12 +408,12 @@ Nous allons ajouter les lignes ciaprès au fichier de configuration de snort (`s
 Nous allons vérifier la configuration du mode inline (IPS) : `# snort -T -c /etc/snort/snort.conf -Q -i ens32:ens33`
  
  #### 6.8.1 - Test du mode IPS:
-Pour le test du mode IPS on pourra bien simuler une attaque Denial of Service (DoS), mais l’inconvénient est que nous ne pourrons pas l’illustrer de façon claire et concis dans le document. Pour cela nous allons réaliser le test du mode IPS en reprenant le test précèdent en stoppant les paquets ICMP, Telnet et FTP.
-Toujours dans /etc/snort/rules/local.rules, on ajoute les lignes suivantes :
+Pour le test du mode IPS on pourra bien simuler une attaque Denial of Service (DoS). Pour cela nous allons réaliser le test du mode IPS en reprenant le test précèdent en stoppant les paquets ICMP, Telnet et FTP.
+Toujours dans `/etc/snort/rules/local.rules`, on ajoute les lignes suivantes :
 
  ![32](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/32.png)
 
-On enregistre puis on quitte, ensuite on redémarre Snort et les outils complémentaires. Sur la machine du pirate (192.168.40.129) nous allons dans le terminal pour générer les paquets ICMP pour tester le fonctionnement de Snort
+On enregistre, ensuite on redémarre Snort et les outils complémentaires. Sur la machine du attaquante (192.168.40.129) nous allons dans le terminal générer des paquets ICMP pour tester le fonctionnement de Snort.
 
  ![33](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/33.png)
 
@@ -425,10 +426,12 @@ On enregistre puis on quitte, ensuite on redémarre Snort et les outils complém
 Une fois les logs collectés par Filebeat et transmis à Logstash, ils sont indexés dans Elasticsearch. Grâce à Kibana, nous avons conçu un dashboard personnalisé permettant de visualiser en temps réel les alertes générées par Snort.
 Ce tableau de bord constitue l’interface centrale de supervision, offrant une vue synthétique et dynamique sur les événements de sécurité détectés dans notre environnement SOC.
 
-- Accès à Kibana
+- Accès à Kibana :
+
 L’interface Kibana est accessible via un navigateur à l’adresse suivante : `http://"IP kibana":5601 `
-- Découverte des logs
-Dans la section Discover, nous avons exploré les logs bruts collectés par Filebeat. Cette vue permet de filtrer les événements selon plusieurs critères :
+- Découverte des logs :
+
+Dans la section `Discover`, nous avons exploré les logs bruts collectés par Filebeat. Cette vue permet de filtrer les événements selon plusieurs critères :
 
   - Signature d’alerte
   - IP source et IP cible
@@ -436,7 +439,8 @@ Dans la section Discover, nous avons exploré les logs bruts collectés par File
   - Protocole réseau
   - Plage temporelle
 
-- Champs utilisés pour les visualisations
+- Champs utilisés pour les visualisations :
+
 Les visualisations du dashboard s’appuient sur des champs enrichis via le format JSON dans la configuration de Snort, afin d’optimiser l’affichage et la lisibilité :
 
   - alert.signature : nom de l’alerte déclenchée
@@ -457,7 +461,8 @@ Les visualisations du dashboard s’appuient sur des champs enrichis via le form
 
   - class : type d’attaque (scan, brute-force, injection, etc.)
 
-- Modules Filebeat activés
+- Modules Filebeat activés:
+
 Pour enrichir les logs système et web, nous avons activé les modules suivants :
 
 ```bash
@@ -469,7 +474,7 @@ Ces modules fournissent des dashboards prêts à l’emploi dans Kibana,
 
  ![dash](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/dashboard.png)
 
-- Résultats obtenus
+- Résultats obtenus :
 Le dashboard Kibana nous a permis de :
 
   - Visualiser en temps réel les attaques détectées
