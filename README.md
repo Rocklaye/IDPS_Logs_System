@@ -408,7 +408,7 @@ Nous allons ajouter les lignes ciaprès au fichier de configuration de snort (`s
 Nous allons vérifier la configuration du mode inline (IPS) : `# snort -T -c /etc/snort/snort.conf -Q -i ens32:ens33`
  
  #### 6.8.1 - Test du mode IPS:
-Pour le test du mode IPS on pourra bien simuler une attaque Denial of Service (DoS). Pour cela nous allons réaliser le test du mode IPS en reprenant le test précèdent en stoppant les paquets ICMP, Telnet et FTP.
+Pour le test du mode IPS on va simuler une attaque Denial of Service (DoS). Pour cela nous allons réaliser le test du mode IPS en reprenant le test précèdent en stoppant les paquets ICMP, Telnet et FTP.
 Toujours dans `/etc/snort/rules/local.rules`, on ajoute les lignes suivantes :
 
  ![32](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/32.png)
