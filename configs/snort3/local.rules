@@ -1,0 +1,54 @@
+#  Détection de ping ICMP
+alert icmp any any -> any any ( msg:"ICMP Ping detected"; sid:1000001; rev:1; classtype:icmp-event; priority:3; )
+
+# Scan TCP SYN sur port SSH
+alert tcp any any -> any 22 ( msg:"TCP SYN scan on SSH"; flags:S; sid:1000002; rev:1; classtype:attempted-recon; priority:2; )
+
+# Scan Nmap (content-based)
+alert tcp any any -> any any ( msg:"Nmap scan detected"; content:"Nmap"; sid:1000003; rev:1; classtype:attempted-recon; priority:2; )
+
+# Exécution de commandes Windows
+alert tcp any any -> any any ( msg:"Windows command execution attempt"; content:"cmd.exe"; sid:1000004; rev:1; classtype:trojan-activity; priority:1; )
+
+# FTP
+alert tcp $EXTERNAL_NET any -> $HOME_NET 21 ( msg:"Accès au service FTP"; sid:1000005; rev:1; classtype:network-scan; priority:2; )
+
+# Telnet
+alert tcp $EXTERNAL_NET any -> $HOME_NET 23 ( msg:"Telnet connexion"; sid:1000006; rev:1; classtype:network-scan; priority:1; )
+
+# SSH Brute Force
+alert tcp any any -> any 22 ( msg:"SSH Brute Force Attempt"; flow:to_server,established; content:"SSH"; detection_filter:track by_src, count 5, seconds 60; sid:1000101; rev:1; classtype:attempted-admin; priority:2; )
+alert tcp $EXTERNAL_NET any -> $HOME_NET 22 ( msg:"SSH Brute Force"; flow:to_server,established; content:"SSH"; detection_filter:track by_src, count 5, seconds 60; sid:1000101; rev:2; )
+alert tcp any any -> any 22 ( msg:"SSH Brute Force2"; flow:to_server,established; content:"SSH"; detection_filter:track by_src, count 5, seconds 60; sid:1000103; rev:2; )
+
+# EICAR Malware
+alert tcp any any -> any any ( msg:"EICAR test file detected"; content:"X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*"; sid:1000102; rev:1; classtype:trojan-activity; priority:1; )
+
+# Nmap SYN Scan
+alert tcp any any -> any any ( msg:"Nmap SYN Scan Detected"; flags:S; detection_filter:track by_src, count 20, seconds 10; sid:1000103; rev:1; classtype:attempted-recon; priority:2; )
+
+# DoS SYN Flood
+alert tcp any any -> $HOME_NET any ( flags:S; msg:"Possible SYN DoS"; flow:stateless; detection_filter:track by_dst, count 1000, seconds 3; sid:1000105; rev:1; classtype:attempted-dos; priority:1; )
+
+# SQL Injection
+alert tcp any any -> any 80 (
+    msg:"Possible SQL Injection - (OR 1=1#)";
+    content:"OR";
+    pcre:"/%27\+OR\+1%3D1%23/i";
+    sid:1000801; rev:1;
+)
+
+alert tcp any any -> any 80 (
+    msg:"Possible SQL Injection — Schema Discovery (SHOW TABLES)";
+    content:"SHOW";
+    pcre:"/%27\+SHOW\+TABLES--/i";
+    sid:1000403; rev:2;
+)
+
+# DoS SYN Flood
+alert tcp any any -> $HOME_NET any ( flags:S; msg:"Possible SYN DoS"; flow:stateless; detection_filter:track by_dst, count 1000, seconds 3; sid:1000105; rev:1; classtype:attempted-dos; priority:1; )
+
+# IPS Rules
+#drop tcp any any -> any 80 (msg:"HTTP blocked"; sid:1000007; rev:1;)
+#drop icmp any any -> any any (msg:"ICMP blocked"; sid:1000008; rev:1;)
+
