@@ -37,7 +37,7 @@ Snort est un système de détection et de prévention d’intrusions (IDS/IPS) o
 Il analyse le trafic réseau en temps réel à la recherche de comportements suspects, d’attaques ou d’anomalies à l’aide de signatures et de règles définies.
 Lorsqu’une menace est détectée, Snort génère une alerte qui est ensuite envoyée vers Filebeat, puis intégrée dans Elasticsearch pour être visualisée dans Kibana.
 
-![Snort](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/Snort.jpg)
+![Snort](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/Snort.jpg)
 
 
 ## III. Architecture d’implémentation
@@ -56,7 +56,7 @@ L’infrastructure repose sur plusieurs machines virtuelles interconnectées :
  
  - VPC (Poste utilisateur) : Génère du trafic légitime, permet de tester les faux positifs et la visibilité côté utilisateur
 
-![Archi](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/archi.png)
+![Archi](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/archi.png)
  
 ## IV. Installation & configuration
 
@@ -77,7 +77,7 @@ Allez, on y va !
 
   `# sudo apt update && sudo apt upgrade -y`
 
-![5](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/5.png)
+![5](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/5.png)
 
 #### 1.2. Installer Elasticsearch
    
@@ -87,7 +87,7 @@ Allez, on y va !
 - Installer le paquet apt-transport-https pour permettre les téléchargements via HTTPS :
   `#sudo apt-get install apt-transport-https`
 
-![2](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/2.png)
+![2](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/2.png)
 
 - Ajouter le dépôt Elastic à ta liste de sources :
   `# echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list`
@@ -95,7 +95,7 @@ Allez, on y va !
 - Mettre à jour les paquets et installer Elasticsearch :
   `# sudo apt-get update && sudo apt-get install elasticsearch`
 
-![6](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/6.png)
+![6](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/6.png)
 
 
 ***Attention*** : la sécurité d’Elasticsearch est activée par défaut. Le mot de passe, les certificats et les clés te seront affichés dans le terminal, il faut les sauvegarder quelque part. 
@@ -107,11 +107,11 @@ Ici on garde l’installation locale (non accessible depuis l’extérieur) puis
    
   - Pour rendre le service accessible depuis n’importe quelle adresse réseau, changer network.host de localhost à 0.0.0.0
 
-    ![8](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/8.png)
+    ![8](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/8.png)
 
   - Désactiver la sécurité (changer de true à false) :
 
-   ![7](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/7.png)
+   ![7](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/7.png)
 
 - Activer et démarrer Elasticsearch :
  ``` bash
@@ -119,12 +119,12 @@ Ici on garde l’installation locale (non accessible depuis l’extérieur) puis
  # sudo systemctl status elasticsearch
  ```
 
-![9](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/9.png)
+![9](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/9.png)
 
 - Tester l’API d’Elasticsearch :
   `# curl -XGET "localhost:9200"`
 
-![10](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/10.png)
+![10](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/10.png)
 
 On obtiens une réponse JSON contenant des informations sur la version, le cluster, etc.
 Si cette réponse n'est pas obtenu , il faudrait verifier la configuration et les règles du pare-feu (le port 9200 doit être autorisé).
@@ -133,7 +133,7 @@ Si cette réponse n'est pas obtenu , il faudrait verifier la configuration et le
 ### 3. Installer Logstash
   `# sudo apt install logstash`
 
-![11](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/11.png)
+![11](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/11.png)
 
 
 Pour que Logstash traite correctement les logs que tu enverras via Filebeat, il faut configurer des filtres.
@@ -148,14 +148,14 @@ Sinon, tu risques de voir dans Kibana que tu as des données, mais vides.
   # sudo systemctl status logstash
 ```
 
-![12](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/12.png)
+![12](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/12.png)
 
 Si le pare-feu est actif, autorise le port 5044 pour que Logstash reçoive les logs.
 
 ### 4. Installer Kibana
   `# sudo apt install kibana`
 
-![13](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/13.png)
+![13](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/13.png)
 
 - Modifier le fichier de configuration : `# sudo nano /etc/kibana/kibana.yml`.
 Ensuite on Décommente et ajuste les lignes  :
@@ -171,11 +171,11 @@ Ensuite on Décommente et ajuste les lignes  :
   # sudo systemctl status kibana
 ```
 
-![14](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/14.png)
+![14](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/14.png)
 
 Si tout s’est bien passé, on peux acceder au dashboard de ELK via ladresse IP du son serveur dans un navigateur 
 
-![15](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/15.png)
+![15](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/15.png)
 
 ### 5. Installer Filebeat sur le serveur source de logs
 
@@ -184,7 +184,7 @@ Nous allons installer et configurer filebeat pour envoyer les logs vers logstash
   #### 5.1 - Télécharger et installer Filebeat :
   `# curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.9.2-amd64.deb`
       
-  ![FLB](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/16.png)
+  ![FLB](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/16.png)
       
   ensuite on l'installe avec : `# sudo dpkg -i filebeat-8.9.2-amd64.deb`
 
@@ -192,11 +192,11 @@ Nous allons installer et configurer filebeat pour envoyer les logs vers logstash
   #### 5.2 - Ouvrir le fichier de configuration :
   `# sudo nano /etc/filebeat/filebeat.yml`
 
- ![FLB](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/FLB.png)
+ ![FLB](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/FLB.png)
 
  Comme les logs vont passer par Logstash (et non directement à Elasticsearch), commentons la section output.elasticsearch :
 
- ![FLB2](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/FLB2.png)
+ ![FLB2](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/FLB2.png)
 
 ensuite on décommente la section output.logstash en indiquant l'adresse IP de ton serveur ELK (au lieu de localhost) :
  
@@ -212,7 +212,7 @@ output.logstash:
 ```
 
 
- ![17](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/17.png)
+ ![17](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/17.png)
 
   #### 5.4 - Filebeat fournit des modules prédéfinis pour divers services (Apache, système, etc).
 
@@ -226,19 +226,19 @@ Pour nous, on va activer les modules system et apache :
 
 Chaque module correspond à un fichier de configuration dans /etc/filebeat/modules.d/. Nous allons ouvrir et activer les mondule avec `enabled: true`
 
- ![FLB3](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/FLB3.png)
+ ![FLB3](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/FLB3.png)
 
    #### 5.5 - Charger les modèles d’index dans Elasticsearch (en utilistant l’IP du serveur ELK) :
     
   `# sudo filebeat setup --index-management -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=["192.168.40.130:9200"]'`
 
- ![19](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/19.png)
+ ![19](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/19.png)
 
   #### 5.6 - Charger les tableaux de bord (dashboards) dans Kibana 
    
   `# sudo filebeat setup -E output.logstash.enabled=false -E output.elasticsearch.hosts=['192.168.40.130:9200'] -E setup.kibana.host=192.168.40.130:5601`
 
- ![20](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/20.png)
+ ![20](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/20.png)
 
   #### 5.7 - Résultat final
  
@@ -325,7 +325,7 @@ On copie tous les fichiers ayant pour extension .conf et .map du répertoire `�
 
 Maintenant, nous allons vérifier si Snort est bien installé avec la commande `‶snort -V` depuis le terminal :
 
- ![21](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/21.png)
+ ![21](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/21.png)
 
 #### 6.5 - Installation des règles
 
@@ -338,17 +338,17 @@ Pour installer les règles Snort, nous devons nous inscrire sur le site officiel
 
 Oinkmaster est un script écrit avec le langage de programmation `PERL` par l’éditeur du logiciel qui va nous servir à mettre jour les fichiers de règles qui sont présents dans `/etc/snort/rules`. Pour permettre à Oinkmaster de télécharger les règles de Snort, nous avons besoin de le configurer en synchronisation avec le site officiel de Snort. Pour cela nous avons besoin d’une clé appelé « Oink code » sur le site de Snort. Après enregistrement notre « Oink code » est .Nous allons à présent mettre en place Oinkmaster.
 
- ![23B](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/23B.png)
+ ![23B](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/23B.png)
 
 
 Nous allons vérifier si Oinkmaster est bien installé avec la commande : `oinkmaster.pl -V`
 
 
- ![24](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/24%20OINKMAKER.png)
+ ![24](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/24%20OINKMAKER.png)
 
 Nous allons éditer le fichier : `# vi /etc/oinkmaster.conf`
 
- ![25](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/25.png)
+ ![25](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/25.png)
 
 
 #### 6.7 - Configuration de Snort 
@@ -366,7 +366,7 @@ Nous allons modifier les lignes suivantes pour informer snort des différents r�
  - `ipvar EXTERNAL_NET any en ipvar EXTERNAL_NET !$HOME_NET` : pour indiquer à snort que tout hôte dont l'adresse IP est différente de l'adresse du réseauprotégé est un hôte du réseau externe.
 Notons que nous avons la possibilité de définir les adresses des différents serveurs s’ils sont différents du `‘’$HOME_NET’’`.
 
- ![27](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/27.png)
+ ![27](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/27.png)
 
 Notons que nous avons la possibilité de définir les adresses des différents serveurs s’ils sont différents du `‘’$HOME_NET’’`.
 
@@ -377,7 +377,7 @@ Pour vérifier si nos configurations sont bonnes, nous allons tester Snort avec 
 
 Si tout va bien, on aura un résultat semblable à celui -ci où nous avons le message ‶snort sccessfully valided the configuration! ″ pour nous informer que nous avons bien configurer Snort.
 
-  ![Image5](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/Image5.png)
+  ![Image5](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/Image5.png)
 
 
  ##### 6.7.3 - Test du mode IDS:
@@ -385,7 +385,7 @@ Si tout va bien, on aura un résultat semblable à celui -ci où nous avons le m
 Pour la réalisation de ce test, nous allons déclarer les protocoles ICMP, Telnet et FTP, comme protocoles suspects afin de tester le système de détection mis en place.
 Nous allons ajouter ces règles dans /etc/snort/rules/local.rules :
 
- ![28](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/28.png)
+ ![28](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/28.png)
 
 
 On enregistre puis on quitte, ensuite on démarre Snort et les outils complémentaires.
@@ -394,7 +394,7 @@ Pour détecter les alertes dans la console par Snort, on tape dans le terminal d
 
   `# Snort -A console -q -c  /etc/snort/snort.conf -I ens33`
 
- ![29](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/29.png)
+ ![29](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/29.png)
 
 Sur la figure, nous remarquons que Snort a détecté les paquets Telnet avec le message `‶Telnet connexion″`. Nous pouvons conclure que le mode IDS de Snort fonctionne correctement.
 
@@ -402,24 +402,24 @@ Sur la figure, nous remarquons que Snort a détecté les paquets Telnet avec le 
 Pour configurer Snort en tant que IPS, nous avons besoin d'apporter quelques modifications dans `snort.conf`. Mais avant, il faut vérifier les versions de DAQ installées avec la commande cicontre : `# snort --daq-list`
 Nous allons ajouter les lignes ciaprès au fichier de configuration de snort (`snort.conf`)
 
- ![31](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/31.png)
+ ![31](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/31.png)
 
 Nous allons vérifier la configuration du mode inline (IPS) : `# snort -T -c /etc/snort/snort.conf -Q -i ens32:ens33`
  
  #### 6.8.1 - Test du mode IPS:
 Pour le test du mode IPS on va simuler une attaque Denial of Service (DoS). Pour cela nous allons réaliser le test du mode IPS en reprenant le test précèdent en stoppant les paquets ICMP, Telnet et FTP.
 Toujours dans `/etc/snort/rules/local.rules`, on ajoute les lignes suivantes :
- ![32](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/32.png)
+ ![32](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/32.png)
 
- ![32](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/32.png)
+ ![32](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/32.png)
 
 On enregistre, ensuite on redémarre Snort et les outils complémentaires. Sur la machine du attaquante (192.168.40.129) nous allons dans le terminal générer des paquets ICMP pour tester le fonctionnement de Snort.
 
- ![33](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/33.png)
+ ![33](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/33.png)
 
  `# snort -A console -q -c /etc/snort/snort.conf -I ens32:ens33`
 
- ![34](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/34.png)
+ ![34](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/34.png)
 
 
 ## V. Dashboard Kibana
@@ -472,7 +472,7 @@ sudo filebeat modules enable apache
 Ces modules fournissent des dashboards prêts à l’emploi dans Kibana,
 - Exemple de dashboard
 
- ![dash](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/dashboard.png)
+ ![dash](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/dashboard.png)
 
 - Résultats obtenus :
 Le dashboard Kibana nous a permis de :
@@ -492,7 +492,7 @@ Chaque scénario cible une classe de menace différente, permettant de tester :
   - La collecte et centralisation des logs via syslog-ng/Logstash
   - La visualisation et l’analyse dans Kibana
 
- ![34](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/5_scenarios.png)
+ ![34](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/5_scenarios.png)
 
  ### Scénario 1 - Scan de réseau avec Nmap
  
@@ -503,16 +503,16 @@ Le scan a été lancé depuis la machine Kali vers DVWA avec la commande suivant
   - `192.168.50.20` : IP de la cible DVWA
 
 Sur la machine Kali, nous avons lancé un scan réseau avec Nmap afin d’identifier les hôtes actifs et les ports ouverts :
-![S11](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/nmap1.png)
+![S11](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/nmap1.png)
 
 Snort a bien intercepté les paquets SYN répétés et a généré des alertes dans le fichier de logs `"alert_json.txt"`
-![S12](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/nmap2.png)
+![S12](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/nmap2.png)
 
 
 Dans Kibana, on retrouve cette alerte avec le message “Scan Nmap SYN détecté”, l’IP source de Kali, et l’IP cible DVWA.
-![S13](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/nmap3.png)
+![S13](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/nmap3.png)
 Cela confirme que le scan a été détecté comme une tentative de reconnaissance réseau, grâce à la règle `sid:1000101`.
-![S14](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/nmap4.png)
+![S14](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/nmap4.png)
 
 
 
@@ -526,20 +526,20 @@ D’abord nous avions procédé à l’ installation de  ssh sur notre IDS/SIEM
   `#Sudo systemctl start ssh`
   `#Sudo systemctl enable ssh`
 
-![35](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/ssh1.png)
+![35](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/ssh1.png)
 
 Ensuite depuis kali nous avons exécuté : `hydra -l admin -P /usr/share/wordlists/rockyou.txt ssh://192.168.50.20`
 
-![36](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/ssh2.png)
+![36](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/ssh2.png)
 Snort a détecté un nombre élevé de connexions SSH en peu de temps et a généré des alertes.
-![S21](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/ssh3.png)
+![S21](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/ssh3.png)
 
 
 Sur Kibana, on voit clairement l’alerte “Brute-force SSH détecté”, avec l’IP source de Kali et le port 22 ciblé.
-![S22](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/ssh4.png)
+![S22](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/ssh4.png)
 
 La règle sid:1000201 s’est déclenchée après 10 connexions en moins de 60 secondes, ce qui valide la détection.
-![S22](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/ssh5.png)
+![S22](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/ssh5.png)
 
 
 ### Scénario 3 : DOS SYN Flood
@@ -557,16 +557,16 @@ L’attaquant effectue une attaque par déni de service (DoS) en saturant la tab
 - `192.168.50.20` : IP de la machine cible
 
 Sur cette première capture, on voit qu'on a exécuté la commande hping3 depuis Kali. Le terminal affiche l’envoi massif de paquets SYN vers le port 80 de DVWA.
-![S31](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/dos1.png)
+![S31](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/dos1.png)
 
 Ensuite, dans le fichier alert_json.txt sur la machine IDS, on voit que Snort3 a bien généré une alerte avec le message “Déni de service - SYN flood détecté”
-![S32](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/dos2.png)
+![S32](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/dos2.png)
 
 Sur Kibana, l’alerte est bien visible. On retrouve l’IP source de Kali, l’IP cible DVWA, le port 80, et le SID de la règle.
-![S33](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/dos3.png)
+![S33](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/dos3.png)
 
 Cela confirme que le trafic SYN non complété a été détecté comme une tentative de saturation TCP, typique d’un DoS.
-![S34](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/dos4.png)
+![S34](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/dos4.png)
 
 Le serveur n’a pas répondu aux paquets SYN envoyés par l’attaquant, car ceux-ci n’étaient pas suivis d’un ACK, empêchant l’établissement complet des connexions TCP. Ce comportement a été intercepté par Snort, qui a reconnu le flot massif de paquets SYN non finalisés comme une attaque par déni de service. La visualisation dans Kibana permet ensuite de confirmer l’origine de l’attaque, le type de trafic observé, ainsi que la règle de détection déclenchée.
 
@@ -578,16 +578,16 @@ L’attaque simule l’introduction d’un fichier malveillant dans le système 
 
 Cette commande simule un transfert réseau contenant une charge malveillante, sans passer par un navigateur ou un fichier physique.
 
-![S41](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/eicar1.png)
+![S41](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/eicar1.png)
 Lors de l’envoi de la signature EICAR via le réseau , le serveur Apache retourne une erreur `HTTP 400 Bad Request` car la requête n’est pas conforme au protocole HTTP (pas de méthode `GET`, ni d’en-têtes). Ce comportement est typique d’un attaquant qui injecte directement une charge malveillante dans le flux réseau. 
 
 
 Malgré cette erreur côté serveur, Snort3 détecte la signature EICAR dans le contenu brut du paquet TCP, prouvant que la détection IDS ne dépend pas de la validité HTTP, mais bien de l’analyse du trafic réel.
-![S42](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/eicar2.png)
+![S42](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/eicar2.png)
 
 Dans Kibana, on retrouve l’alerte générée par Snort avec le message “Malware détecté - Fichier EICAR”. Les métadonnées que nous avons configurées précédemment permettent d’afficher clairement l’IP source (la machine Kali), l’IP cible (DVWA), le port `80` utilisé pour l’attaque, ainsi que le SID de la règle déclenchée. Cela confirme que la détection fonctionne correctement et que l’alerte est bien remontée dans la chaîne de logs.
-![S43](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/eicar3.png)
-![S44](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/eicar4.png)
+![S43](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/eicar3.png)
+![S44](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/eicar4.png)
 
 ### Scénario 5 : injection SQL
 
@@ -597,31 +597,31 @@ Pour ce scénario, on a utilisé deux types d’injection SQL : **contournement 
 L'objectif de l’attaque est de simuler une tentative de bypass d’authentification en injectant une condition SQL toujours vraie dans le champ id. Ainsi l'attaquant contourne la vérification des identifiants et d’accéder à l’application sans mot de passe valide.
 
 Sur kali, on accede a l'interface de DVWA , puis sur la section "SQL injection" et au niveau du champ input `"user ID"` on va injecté le payload : `1' OR 1=1#`
-![S51](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/sql1.png)
+![S51](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/sql1.png)
 
 Sur DVWA, la requête renvoie tous les enregistrements de la table des utilisateurs, contournant ainsi l'authentification ou les contrôles d'accès.
-![S52](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/sql2.png)
+![S52](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/sql2.png)
 
 Snort a intercepté la requête encodée par le navigateur  et a généré une alerte dans le fichier `alert_json.txt`, confirmant que la tentative d’injection a bien été détectée.
-![S53](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/sql3.png)
+![S53](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/sql3.png)
 
 Dans Kibana, on retrouve l’alerte avec le message “Injection SQL - OR 1=1 détectée”, l’IP source de Kali, l’IP cible DVWA, le port HTTP, et le SID de la règle.
-![S54](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/sql4.png)
-![S54](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/sql5.png)
+![S54](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/sql4.png)
+![S54](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/sql5.png)
 Cela montre que notre pipeline Snort + ELK est capable de détecter les injections même lorsqu’elles sont encodées côté client.
 
 - #### 2 - Reconnaissance de schéma via “SHOW TABLES “
 L'objectif de l’attaque est d’injecter la commande SQL SHOW TABLES dans un champ input pour afficher la structure de la base de données cible.
 
 Toujours au niveau du champ input `"user ID"` on injecte la commande ` 1``SHOW TABLES--`
-![S55](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/sql6.png)
+![S55](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/sql6.png)
 Snort a détecté cette tentative d’exploration de la base de données et a généré une alerte spécifique dans alert_json.txt.
-![S56](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/sql7.png)
+![S56](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/sql7.png)
 
 Sur Kibana, l’alerte apparaît avec le message “Injection SQL - SHOW TABLES détectée”, les IPs source et destination, et le SID correspondant.
 
-![S57](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/sql8.png)
-![S57](https://github.com/fatimandiaya/IDPS_logs_system/blob/main/Images/sql9.png)
+![S57](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/sql8.png)
+![S57](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/sql9.png)
 Cette détection confirme que notre IDS est capable a la fois capables d’intercepter des requêtes SQL orientées reconnaissance, et les bypass d’authentification.
 
 
