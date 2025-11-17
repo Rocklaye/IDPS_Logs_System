@@ -26,7 +26,7 @@ Pour la réalisation de notre projet nous avons utilisés différents outils tel
     
    - Kibana: Il représente l' Interface utilisateur de visualisation. Il fournit un tableau de bord et des outils d'exploration pour visualiser les logs, les tendances, et surtout, les anomalies et alertes détectées par Snort.
 
-![ELK](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/1.png082918_1504_ELKStackTut1.webp)
+![ELK](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/082918_1504_ELKStackTut1.webp)
 
 
    ### 2. Filebeat
