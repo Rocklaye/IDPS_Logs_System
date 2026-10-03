@@ -136,8 +136,8 @@ Si cette réponse n'est pas obtenu , il faudrait verifier la configuration et le
 ![11](https://github.com/Rocklaye/IDPS_Logs_System/blob/main/Images/11.png)
 
 
-Pour que Logstash traite correctement les logs que tu enverras via Filebeat, il faut configurer des filtres.
-Sinon, tu risques de voir dans Kibana que tu as des données, mais vides.
+Pour que Logstash traite correctement les logs qu'on enverras via Filebeat, il faut configurer des filtres.
+Sinon, on risques de voir dans Kibana des données vides.
 
 - Créer un fichier de filtre :
   `# sudo nano /etc/logstash/conf.d/beats.conf`
